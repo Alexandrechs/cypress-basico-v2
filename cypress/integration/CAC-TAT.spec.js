@@ -48,13 +48,15 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         cy.get('.error').should('not.be.visible')
     })
 
-    it('campo telefone continua vazio quando preenchido com valor não-numerico', function () {
+    Cypress._.times (3, function () {
+        it('campo telefone continua vazio quando preenchido com valor não-numerico', function () {
 
         cy.get('#phone')
         .type('Ab!@#$')
         .should('have.value', '')
 
-    })
+        })
+    })   
 
     it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function () {
 
@@ -243,7 +245,31 @@ describe('Central de Atendimento ao Cliente TAT', function() {
 
         cy.tick(THREE_SECONDS_IN_MS)
         cy.get('.error').should('not.be.visible')
+    })
 
+    it('exibe e esconde as mensagens de sucesso e erro usando o .invoke', function () {
+        cy.get('.success')
+          .should('not.be.visible')
+          .invoke('show')
+          .should('be.visible')
+          .and('contain', 'Mensagem enviada com sucesso.')
+          .invoke('hide')
+          .should('not.be.visible')
+        cy.get('.error')
+          .should('not.be.visible')
+          .invoke('show')
+          .should('be.visible')
+          .and('contain', 'Valide os campos obrigatórios!')
+          .invoke('hide')
+          .should('not.be.visible')
+      })
+
+    it('preenche a area de texto usando o comando invoke', function () {
+        const longText = Cypress._.repeat ('Teste Homolog', 20)
+
+        cy.get('#open-text-area')
+        .invoke('val', longText)
+        .should('have.value', longText)
     })
 
 })
